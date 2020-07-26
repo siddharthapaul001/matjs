@@ -1,4 +1,4 @@
-function _deepCopy(obj) {
+function deepCopy(obj) {
     return JSON.parse(JSON.stringify(obj));
 }
 
@@ -9,7 +9,7 @@ function matFill(dim, defaultFill) {
             newMat = Array(n);
             newMat[0] = mat;
             for (let i = 1, l = n; i < l; i++) {
-                newMat[i] = _deepCopy(mat);
+                newMat[i] = deepCopy(mat);
             }
             mat = newMat;
         } else {
@@ -21,5 +21,6 @@ function matFill(dim, defaultFill) {
 }
 
 export {
+    deepCopy,
     matFill
 }
