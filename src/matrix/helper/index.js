@@ -1,3 +1,5 @@
+const ITERATE_ALL = -1;
+
 function deepCopy(obj) {
     return JSON.parse(JSON.stringify(obj));
 }
@@ -48,12 +50,35 @@ function getMultiDimArray (singleDimArr, size) {
     return multiDimArr;
 }
 
-function sizeToIndex () {
-
+function sizeToIndex (matSize, size) {
+    let n;
+    if (size.length < matSize.length) {
+        n = countBySize(matSize.slice(size.length - 1));
+    }
 }
 
-function indexToSize () {
+// [2 5 2]
+function indexToSize (idx, matSize) {
+    let sindleDimIdx = idx;
+    matSize.reduce((multiDimIdx, currLen) => {
+        singleDimIdx / currLen;
+    }, []);
+}
 
+function iterator(arr, size, callback) {
+    let dim = size.length,
+        currMultiIdx = (new Array(dim)).fill(0),
+        ptrIdx = dim - 1;
+    for (let i = 0, l = arr.length; i < l; i++) {
+        callback(arr[i], [...currMultiIdx]);
+        currMultiIdx[ptrIdx]++;
+        while (currMultiIdx[ptrIdx] >= size[ptrIdx]) {
+            currMultiIdx[ptrIdx] = 0;
+            currMultiIdx[ptrIdx - 1]++;
+            ptrIdx--;
+        }
+        ptrIdx = dim - 1;
+    }
 }
 
 export {
@@ -64,5 +89,6 @@ export {
     getSingleDimArray,
     getMultiDimArray,
     sizeToIndex,
-    indexToSize
+    indexToSize,
+    iterator
 }

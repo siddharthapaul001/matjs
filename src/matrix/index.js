@@ -1,5 +1,6 @@
 import { matFill, deepCopy, countBySize, getSizeByArray, getSingleDimArray,
-    getMultiDimArray } from './helper';
+    getMultiDimArray, 
+    iterator} from './helper';
 import dot from '../common/dot';
 import add from '../common/add';
 import substract from '../common/substract';
@@ -51,5 +52,9 @@ export default class Matrix {
 
     copy () {
         return new Matrix(this._arr);
+    }
+
+    forEach(callback) {
+        iterator(this._arr, this._size, callback);
     }
 }
