@@ -53,7 +53,7 @@ function getMultiDimArray (singleDimArr, size) {
 function dimToIndex (dim, matDim) {
     let idx = 0, i, l;
 
-    for (i = 0, l = dun.length; i < l - 1; i++) {
+    for (i = 0, l = dim.length; i < l - 1; i++) {
         idx += dim[i] * matDim[i];
     }
 

@@ -11,7 +11,7 @@ export default class Matrix {
         this._arr = []; this._dim;
         if (typeof defaultFill === 'number') {
             // expecting arr is a single dimension Array specifing dimension
-            this._arr = (new Array(countBySize(arr))).fill(defaultFill);
+            this._arr = (new Array(countByDim(arr))).fill(defaultFill);
             this._dim = [...arr];
         } else {
             this.setValues(arr);
