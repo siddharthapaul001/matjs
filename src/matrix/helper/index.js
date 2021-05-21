@@ -8,19 +8,19 @@ function matFill(dim, defaultFill) {
     
 }
 
-function countBySize(size) {
-    return size.reduce((count, sub) => {
-        return count * sub;
+function countByDim(dim) {
+    return dim.reduce((count, dimSize) => {
+        return count * dimSize;
     }, 1);
 }
 
-function getSizeByArray(arr) {
-    let ptr = arr, size = [];
+function getDimByArray(arr) {
+    let ptr = arr, dim = [];
     while (Array.isArray(ptr)) {
         size.push(ptr.length);
         ptr = ptr[0];
     }
-    return size;
+    return dim;
 }
 
 function getSingleDimArray (multiDimArr, dim) {
@@ -50,18 +50,30 @@ function getMultiDimArray (singleDimArr, size) {
     return multiDimArr;
 }
 
-function sizeToIndex (matSize, size) {
-    let n;
-    if (size.length < matSize.length) {
-        n = countBySize(matSize.slice(size.length - 1));
+function dimToIndex (dim, matDim) {
+    let idx = 0, i, l;
+
+    for (i = 0, l = dun.length; i < l - 1; i++) {
+        idx += dim[i] * matDim[i];
     }
+
+    idx += dim[l - 1];
+    return idx;
 }
 
 // [2 5 2]
-function indexToSize (idx, matSize) {
-    let sindleDimIdx = idx;
-    matSize.reduce((multiDimIdx, currLen) => {
-        singleDimIdx / currLen;
+function indexToDim (idx, matDim) {
+    let singleDimIdx = idx;
+
+    return matDim.reduce((multiDim, matDimLen) => {
+        if (singleDimIdx < matDimLen) {
+            multiDim.push(singleDimIdx);
+            singleDimIdx = 0;
+        } else {
+            multiDim.push(parseInt(singleDimIdx / multiDimLen));
+            singleDimIdx = singleDimIdx % multiDimLen;
+        }
+        return multiDim;
     }, []);
 }
 
@@ -84,11 +96,11 @@ function iterator(arr, size, callback) {
 export {
     deepCopy,
     matFill,
-    countBySize,
-    getSizeByArray,
+    countByDim,
+    getDimByArray,
     getSingleDimArray,
     getMultiDimArray,
-    sizeToIndex,
-    indexToSize,
+    dimToIndex,
+    indexToDim,
     iterator
 }
