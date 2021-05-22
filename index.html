@@ -8,5 +8,14 @@
     <script src="matjs.js"></script>
 </head>
 <body>
+    <canvas id="mat-canvas"></canvas>
+
+    <script>
+        var ctx;
+        (function() {
+            const canvas = document.getElementById("mat-canvas");
+            ctx = canvas.getContext("2d");
+        })();
+    </script>
 </body>
 </html>

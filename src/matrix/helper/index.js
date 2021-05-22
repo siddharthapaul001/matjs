@@ -17,7 +17,7 @@ function countByDim(dim) {
 function getDimByArray(arr) {
     let ptr = arr, dim = [];
     while (Array.isArray(ptr)) {
-        size.push(ptr.length);
+        dim.push(ptr.length);
         ptr = ptr[0];
     }
     return dim;
@@ -34,18 +34,18 @@ function getSingleDimArray (multiDimArr, dim) {
     return singleDimArr;
 }
 
-function getMultiDimArray (singleDimArr, size) {
-    let tempSize = [...size], n = tempSize.pop(),
-        remDim = tempSize.length,
+function getMultiDimArray (singleDimArr, dim) {
+    let tempDim = [...dim], n = tempDim.pop(),
+        remSize = tempDim.length,
         multiDimArr = singleDimArr;
-    while (remDim) {
+    while (remSize) {
         let tempArr = [];
         for (let i = 0, l = multiDimArr.length; i < l; i += n) {
             tempArr.push(multiDimArr.slice(i, i + n));
         }
         multiDimArr = tempArr;
-        n = tempSize.pop();
-        remDim--;
+        n = tempDim.pop();
+        remSize--;
     }
     return multiDimArr;
 }
@@ -65,7 +65,7 @@ function dimToIndex (dim, matDim) {
 function indexToDim (idx, matDim) {
     let singleDimIdx = idx;
 
-    return matDim.reduce((multiDim, matDimLen) => {
+    return [...matDim].reverse().reduce((multiDim, matDimLen) => {
         if (singleDimIdx < matDimLen) {
             multiDim.push(singleDimIdx);
             singleDimIdx = 0;
@@ -77,19 +77,64 @@ function indexToDim (idx, matDim) {
     }, []);
 }
 
-function iterator(arr, size, callback) {
-    let dim = size.length,
-        currMultiIdx = (new Array(dim)).fill(0),
-        ptrIdx = dim - 1;
-    for (let i = 0, l = arr.length; i < l; i++) {
-        callback(arr[i], [...currMultiIdx]);
+function getValuesInWindow (arr, start, matWindow, matDim) {
+    let windowLength = matWindow && countByDim(matWindow), windowLastDim = matWindow[matWindow.length - 1],
+        incrWindow = matWindow && (windowLength / windowLastDim), values = [],
+        startIdx = dimToIndex(start, matDim), lastMatDim = matDim[matDim.length - 1];
+
+    for (let j = 0; j < incrWindow; j++) {
+        values.push(...arr.slice(startIdx + (j * lastMatDim), startIdx + (j * lastMatDim) + windowLastDim));
+    }
+
+    return values;
+}
+
+function isMultiArrIterationCompatible(arr) {
+    let initLength = Array.isArray(arr[0]) && arr[0].length,
+        isCompatible = true;
+    
+    arr.forEach(innerArr => {
+        if (innerArr.length !== initLength) {
+            isCompatible = false;
+            return false;
+        }
+    });
+
+    return initLength && isCompatible;
+}
+
+function iterator(arr, dim, startIdx, incrementBy, iterWindow,callback) {
+    let size = dim.length,
+        currMultiIdx = (new Array(size)).fill(0),
+        ptrIdx = size - 1,
+        isMultiArr = isMultiArrIterationCompatible(arr);
+    
+    let windowLength = iterWindow && countByDim(iterWindow), windowLastDim = iterWindow && iterWindow[windowLength - 1],
+        incrWindow = iterWindow && (windowLength / windowLastDim);
+
+    for (let i = startIdx, l = isMultiArr ? arr[0].length : arr.length; i < l; i += incrementBy) {
+        
+        if (iterWindow && !isMultiArr) {
+            let val = new Array(windowLength);
+
+            for (let j = 0; j < incrWindow; j++) {
+                val.push(...arr.slice(i + (j * incrWindow), i + (j * incrWindow) + windowLastDim));
+            }
+
+            callback(val, [...currMultiIdx]);
+        } else if (isMultiArr) {
+            callback(arr.map(subArr => subArr[i]), [...currMultiIdx]);
+        } else {
+            callback(arr[i], [...currMultiIdx]);
+        }
+        
         currMultiIdx[ptrIdx]++;
-        while (currMultiIdx[ptrIdx] >= size[ptrIdx]) {
+        while (currMultiIdx[ptrIdx] >= dim[ptrIdx]) {
             currMultiIdx[ptrIdx] = 0;
             currMultiIdx[ptrIdx - 1]++;
             ptrIdx--;
         }
-        ptrIdx = dim - 1;
+        ptrIdx = size - 1;
     }
 }
 
@@ -102,5 +147,6 @@ export {
     getMultiDimArray,
     dimToIndex,
     indexToDim,
-    iterator
+    iterator,
+    getValuesInWindow
 }
