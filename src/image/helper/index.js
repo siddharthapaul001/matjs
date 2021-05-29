@@ -13,12 +13,12 @@ function parsePixelMatricesFromImageData (imgData) {
         a.push(imgDataArr[i + 3]);
     }
 
-    return {
-        r: new Matrix(r, [height, width]),
-        g: new Matrix(g, [height, width]),
-        b: new Matrix(b, [height, width]),
-        a: new Matrix(a, [height, width])
-    };
+    return [
+        new Matrix(r, [height, width]),
+        new Matrix(g, [height, width]),
+        new Matrix(b, [height, width]),
+        new Matrix(a, [height, width])
+    ];
 }
 
 function getCanvas(height = 150, width = 300) {

@@ -1,7 +1,10 @@
 import Matrix from './matrix';
-import Image from './image';
+import BaseImage from './image/BaseImage';
+import RGBAImage from './image/RGBAImage';
+import imageUtils from './image/utils'
 
 export {
     Matrix,
-    Image
+    BaseImage,
+    imageUtils
 }

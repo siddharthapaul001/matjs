@@ -16,10 +16,12 @@ function countByDim(dim) {
 
 function getDimByArray(arr) {
     let ptr = arr, dim = [];
+    
     while (Array.isArray(ptr)) {
         dim.push(ptr.length);
         ptr = ptr[0];
     }
+
     return dim;
 }
 
@@ -38,15 +40,26 @@ function getMultiDimArray (singleDimArr, dim) {
     let tempDim = [...dim], n = tempDim.pop(),
         remSize = tempDim.length,
         multiDimArr = singleDimArr;
-    while (remSize) {
-        let tempArr = [];
-        for (let i = 0, l = multiDimArr.length; i < l; i += n) {
-            tempArr.push(multiDimArr.slice(i, i + n));
+
+    if (remSize === 1) {
+        // slight optimization as single dim array is heavily used
+        return multiDimArr.slice(i, i + n);
+    } else {
+
+        while (remSize) {
+            let tempArr = [];
+            
+            for (let i = 0, l = multiDimArr.length; i < l; i += n) {
+                tempArr.push(multiDimArr.slice(i, i + n));
+            }
+
+            multiDimArr = tempArr;
+            n = tempDim.pop();
+            remSize--;
         }
-        multiDimArr = tempArr;
-        n = tempDim.pop();
-        remSize--;
+
     }
+
     return multiDimArr;
 }
 
@@ -66,6 +79,7 @@ function indexToDim (idx, matDim) {
     let singleDimIdx = idx;
 
     return [...matDim].reverse().reduce((multiDim, matDimLen) => {
+        
         if (singleDimIdx < matDimLen) {
             multiDim.push(singleDimIdx);
             singleDimIdx = 0;
@@ -73,6 +87,7 @@ function indexToDim (idx, matDim) {
             multiDim.push(parseInt(singleDimIdx / multiDimLen));
             singleDimIdx = singleDimIdx % multiDimLen;
         }
+
         return multiDim;
     }, []);
 }
@@ -129,13 +144,19 @@ function iterator(arr, dim, startIdx, incrementBy, iterWindow,callback) {
         }
         
         currMultiIdx[ptrIdx]++;
+        
         while (currMultiIdx[ptrIdx] >= dim[ptrIdx]) {
             currMultiIdx[ptrIdx] = 0;
             currMultiIdx[ptrIdx - 1]++;
             ptrIdx--;
         }
+
         ptrIdx = size - 1;
     }
+}
+
+function arrayEquals(arr1, arr2) {
+    return arr1.every((item, idx) => item === arr[idx]);
 }
 
 export {
@@ -148,5 +169,6 @@ export {
     dimToIndex,
     indexToDim,
     iterator,
-    getValuesInWindow
+    getValuesInWindow,
+    arrayEquals
 }
