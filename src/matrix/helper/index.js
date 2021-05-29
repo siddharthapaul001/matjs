@@ -156,7 +156,7 @@ function iterator(arr, dim, startIdx, incrementBy, iterWindow,callback) {
 }
 
 function arrayEquals(arr1, arr2) {
-    return arr1.every((item, idx) => item === arr[idx]);
+    return arr1.every((item, idx) => item === arr2[idx]);
 }
 
 export {

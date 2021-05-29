@@ -84,7 +84,7 @@ export default class Matrix {
     }
 
     copy () {
-        return new Matrix(this._arr);
+        return new Matrix(this._arr, this._dim);
     }
 
     forEach(callback) {

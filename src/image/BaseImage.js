@@ -8,10 +8,10 @@ export default class BaseImage {
 
     constructor(channels) {
 
-        if (channels.length && channels.every(channel => channel instanceof Matrix && channel.depth() === 2 && arrayEquals(channels[0].dim(), channel.dim()))) {
-            this._channels = [...channels];
+        if (Array.isArray(channels) && channels.every(channel => channel instanceof Matrix && channel.depth() === 2)) {
+            this._channels = channels.map(m => m.copy());
         } else if (channels instanceof Matrix) {
-            this._channels = [channels];
+            this._channels = [channels.copy()];
         }
 
         this._height = this._channels[0].dim()[0];
